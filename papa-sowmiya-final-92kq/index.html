@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Happy Birthday Sowmiya ❤️</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="bg-hearts" aria-hidden="true"></div>
+
+  <header class="card">
+    <h1>Happy Birthday, <span class="accent">Sowmiya B</span> ❤️</h1>
+    <p class="sub">A tiny surprise site made with love, just for you.</p>
+
+    <div class="row">
+      <button class="btn" id="startBtn">Start the surprises ✨</button>
+      <button class="btn ghost" id="scrollPhotosBtn">Photos 📸</button>
+    </div>
+  </header>
+
+  <main id="content" class="hidden">
+    <section class="card">
+      <h2>Love Quote Jar</h2>
+      <p id="quote" class="quote">Click the button for a quote.</p>
+      <button class="btn" id="quoteBtn">Give me a quote</button>
+    </section>
+
+    <section class="card" id="photos">
+      <h2>Photo Memories (20)</h2>
+      <p class="sub">Click a photo to open it full screen.</p>
+
+      <div class="grid" id="gallery">
+        <img src="images/01.jpg" alt="Memory 1" data-caption="My favorite kind of day—because you were in it." />
+        <img src="images/02.jpg" alt="Memory 2" data-caption="Your smile = my peace." />
+        <img src="images/03.jpg" alt="Memory 3" data-caption="I love you more every day." />
+        <img src="images/04.jpg" alt="Memory 4" data-caption="Always you." />
+        <img src="images/05.jpg" alt="Memory 5" data-caption="Thank you for being you." />
+        <img src="images/06.jpg" alt="Memory 6" data-caption="You make life feel lighter." />
+        <img src="images/07.jpg" alt="Memory 7" data-caption="This moment is still living in my head rent-free." />
+        <img src="images/08.jpg" alt="Memory 8" data-caption="More memories with you, please." />
+        <img src="images/09.jpg" alt="Memory 9" data-caption="My safe place is next to you." />
+        <img src="images/10.jpg" alt="Memory 10" data-caption="You’re my favorite person." />
+        <img src="images/11.jpg" alt="Memory 11" data-caption="If love had a face, it would look like you." />
+        <img src="images/12.jpg" alt="Memory 12" data-caption="I’d choose you again and again." />
+        <img src="images/13.jpg" alt="Memory 13" data-caption="You’re my best decision." />
+        <img src="images/14.jpg" alt="Memory 14" data-caption="I love doing life with you." />
+        <img src="images/15.jpg" alt="Memory 15" data-caption="Your happiness is my favorite thing." />
+        <img src="images/16.jpg" alt="Memory 16" data-caption="My heart feels full with you." />
+        <img src="images/17.jpg" alt="Memory 17" data-caption="Cutest chapter of my life." />
+        <img src="images/18.jpg" alt="Memory 18" data-caption="Forever looks good with you." />
+        <img src="images/19.jpg" alt="Memory 19" data-caption="Even boring days become special with you." />
+        <img src="images/20.jpg" alt="Memory 20" data-caption="Happy Birthday, my Papa ❤️" />
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Click-to-Reveal Surprises</h2>
+      <p class="sub">Tap each heart to reveal something.</p>
+      <div class="surprises" id="surprises"></div>
+    </section>
+
+    <section class="card secret">
+      <h2>Final Surprise (Secret)</h2>
+      <p class="sub">Password hint: your nickname.</p>
+      <div class="row">
+        <input id="pw" type="password" placeholder="Password" />
+        <button class="btn" id="unlockBtn">Unlock</button>
+      </div>
+      <div id="secretContent" class="hidden">
+        <h3>To Sowmiya ❤️</h3>
+        <p>
+          Happy Birthday, my love. You’re my calm, my happiness, and my favorite person.
+          I’m grateful for you—today and always.
+        </p>
+      </div>
+      <p id="pwMsg" class="msg"></p>
+    </section>
+  </main>
+
+  <div id="lightbox" class="lightbox hidden">
+    <div class="lightbox-inner">
+      <button class="x" id="closeLb">×</button>
+      <img id="lbImg" alt="" />
+      <p id="lbCap" class="sub"></p>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
