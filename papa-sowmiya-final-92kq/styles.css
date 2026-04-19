@@ -31,14 +31,13 @@ body{
   border-radius:18px;
   box-shadow:var(--shadow);
   backdrop-filter: blur(8px);
+  position:relative;
+  z-index:2; /* above effects */
 }
 
 h1,h2,h3{ margin:0 0 10px; }
-
 .sub{ color:var(--muted); margin:0 0 14px; }
-
 .accent{ color:#ffd1e1; }
-
 .row{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
 
 .btn{
@@ -50,7 +49,6 @@ h1,h2,h3{ margin:0 0 10px; }
   cursor:pointer;
   font-weight:650;
 }
-
 .btn:hover{ filter:brightness(1.05); }
 .btn:active{ transform: translateY(1px); }
 
@@ -88,9 +86,7 @@ h1,h2,h3{ margin:0 0 10px; }
   text-align:center;
   cursor:pointer;
 }
-
 .surprise .heart{ font-size:26px; }
-
 .surprise.revealed{
   background: rgba(255, 77, 141, .12);
   border-color: rgba(255, 77, 141, .35);
@@ -104,10 +100,9 @@ input{
   color:var(--text);
   min-width:240px;
 }
-
 .msg{ color:var(--muted); margin:10px 0 0; }
 
-/* background sparkles */
+/* ===== Background sparkles ===== */
 .bg-hearts{
   position:fixed;
   inset:0;
@@ -119,17 +114,58 @@ input{
     radial-gradient(circle at 25% 80%, rgba(255,77,141,.75) 0 2px, transparent 3px),
     radial-gradient(circle at 90% 75%, rgba(138,92,255,.75) 0 2px, transparent 3px);
   background-size: 220px 220px;
+  z-index:0;
 }
 
-/* ===== Glow button for Auto-play ===== */
+/* ===== Floating hearts layer (soft) ===== */
+.float-hearts{
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.float-hearts::before,
+.float-hearts::after{
+  content:"";
+  position:absolute;
+  left:-10%;
+  top:0;
+  width:120%;
+  height:120%;
+  background-repeat: repeat;
+  background-size: 260px 260px;
+  opacity: .22;
+  animation: heartsUp 18s linear infinite;
+}
+
+.float-hearts::before{
+  background-image:
+    radial-gradient(circle at 12px 12px, rgba(255,77,141,.85) 0 2px, transparent 3px),
+    radial-gradient(circle at 110px 80px, rgba(255,77,141,.65) 0 2px, transparent 3px),
+    radial-gradient(circle at 180px 140px, rgba(255,77,141,.55) 0 2px, transparent 3px);
+}
+
+.float-hearts::after{
+  background-image:
+    radial-gradient(circle at 30px 140px, rgba(138,92,255,.85) 0 2px, transparent 3px),
+    radial-gradient(circle at 140px 40px, rgba(138,92,255,.65) 0 2px, transparent 3px),
+    radial-gradient(circle at 210px 200px, rgba(138,92,255,.55) 0 2px, transparent 3px);
+  animation-duration: 24s;
+  opacity: .18;
+}
+
+@keyframes heartsUp{
+  from { transform: translateY(18%); }
+  to   { transform: translateY(-18%); }
+}
+
+/* ===== Glow for Auto-play button ===== */
 .btn.glow{
   position:relative;
   animation: glowPulse 1.6s ease-in-out infinite;
-  box-shadow:
-    0 0 0 rgba(255,77,141,.0),
-    0 0 0 rgba(138,92,255,.0);
 }
-
 .btn.glow::after{
   content:"";
   position:absolute;
@@ -141,28 +177,15 @@ input{
   z-index:-1;
   animation: glowPulse 1.6s ease-in-out infinite;
 }
-
-.btn.glow.off{
-  animation:none;
-  box-shadow:none;
-}
-
-.btn.glow.off::after{
-  display:none;
-}
+.btn.glow.off{ animation:none; }
+.btn.glow.off::after{ display:none; }
 
 @keyframes glowPulse{
-  0%,100%{
-    transform: translateY(0);
-    filter:brightness(1);
-  }
-  50%{
-    transform: translateY(-1px);
-    filter:brightness(1.08);
-  }
+  0%,100%{ transform: translateY(0); filter:brightness(1); }
+  50%{ transform: translateY(-1px); filter:brightness(1.08); }
 }
 
-/* ===== Slider (one-by-one photos) ===== */
+/* ===== Slider ===== */
 .slider{
   display:grid;
   grid-template-columns: 52px 1fr 52px;
@@ -206,7 +229,6 @@ input{
   font-size:30px;
   cursor:pointer;
 }
-
 .nav:active{ transform: scale(.98); }
 
 .caption{
@@ -225,16 +247,8 @@ input{
   transition: opacity .25s ease, transform .25s ease;
   pointer-events:none;
 }
-
-.caption.show{
-  opacity:1;
-  transform: translateY(0);
-}
-
-.caption.fade{
-  opacity:0;
-  transform: translateY(8px);
-}
+.caption.show{ opacity:1; transform: translateY(0); }
+.caption.fade{ opacity:0; transform: translateY(8px); }
 
 .count{
   position:absolute;
@@ -248,53 +262,44 @@ input{
   font-size: 13px;
 }
 
-/* mobile tweaks */
 @media (max-width: 520px){
   .slider{ grid-template-columns: 44px 1fr 44px; }
   .nav{ width:44px; height:44px; font-size:28px; }
   .frame img{ height: 56vh; }
 }
 
-/* Lightbox (kept for safety) */
-.lightbox{
-  position:fixed;
-  inset:0;
-  background: rgba(0,0,0,.65);
-  padding:22px;
-  align-items:center;
-  justify-content:center;
-  z-index:9999;
+/* ===== Heart burst layer (JS creates hearts here) ===== */
+.heart-burst-layer{
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 3; /* above everything */
 }
 
-/* GUARANTEED: hidden unless .hidden removed */
-#lightbox.hidden{ display:none !important; }
-#lightbox:not(.hidden){ display:flex; }
-
-.lightbox-inner{
-  max-width:900px;
-  width:100%;
-  background:#0f0f18;
-  border:1px solid rgba(255,255,255,.10);
-  border-radius:18px;
-  padding:14px;
-  box-shadow:var(--shadow);
-  position:relative;
-}
-
-.lightbox-inner img{
-  width:100%;
-  max-height:70vh;
-  object-fit:contain;
-  border-radius:14px;
-}
-
-.x{
+.heart-pop{
   position:absolute;
-  top:8px;
-  right:10px;
-  font-size:28px;
-  background:transparent;
-  border:none;
-  color:var(--text);
-  cursor:pointer;
+  font-size: 18px;
+  will-change: transform, opacity;
+  animation: heartPop 900ms ease-out forwards;
+  text-shadow: 0 10px 20px rgba(0,0,0,.35);
 }
+
+@keyframes heartPop{
+  0%   { transform: translate(-50%, -50%) scale(.7); opacity:0; }
+  15%  { opacity:1; }
+  100% { transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(1.25); opacity:0; }
+}
+
+/* reduced motion */
+@media (prefers-reduced-motion: reduce){
+  .float-hearts::before,
+  .float-hearts::after{ animation:none; }
+  .btn.glow{ animation:none; }
+  .btn.glow::after{ animation:none; }
+  .heart-pop{ animation:none; opacity:0; }
+}
+
+/* Lightbox kept hidden */
+.lightbox{ position:fixed; inset:0; z-index:9999; }
+#lightbox.hidden{ display:none !important; }
