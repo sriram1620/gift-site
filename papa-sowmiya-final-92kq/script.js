@@ -4,6 +4,7 @@ const $ = (id) => document.getElementById(id);
 const startBtn = $("startBtn");
 const content = $("content");
 const scrollPhotosBtn = $("scrollPhotosBtn");
+
 const stepPages = Array.from(document.querySelectorAll(".step-page"));
 const prevStepBtn = $("prevStepBtn");
 const nextStepBtn = $("nextStepBtn");
@@ -19,6 +20,10 @@ const pw = $("pw");
 const secretContent = $("secretContent");
 const pwMsg = $("pwMsg");
 
+// Music
+const bgMusic = $("bgMusic");
+const musicBtn = $("musicBtn");
+
 // Heart burst layer
 const heartBurstLayer = $("heartBurstLayer");
 
@@ -32,42 +37,22 @@ const slider = $("slider");
 const toggleAuto = $("toggleAuto");
 const replayCaps = $("replayCaps");
 
-let currentStep = 1;
-const totalSteps = stepPages.length || 4;
-
-// Lightbox (kept hidden)
-const lightbox = $("lightbox");
-const closeLb = $("closeLb");
-const lbImg = $("lbImg");
-const lbCap = $("lbCap");
-
-function closeLightbox() {
-  if (!lightbox) return;
-  lightbox.classList.add("hidden");
-  if (lbImg) lbImg.src = "";
-  if (lbCap) lbCap.textContent = "";
-}
-closeLightbox();
-if (closeLb) closeLb.addEventListener("click", closeLightbox);
-
 // ===== Heart burst (JS) =====
 function burstHearts(x, y, intensity = 14) {
   if (!heartBurstLayer) return;
+  const hearts = ["❤", "💖", "💗", "💞", "💘"];
 
-  const hearts = ["❤", "💖", "💗", "💜"];
   for (let i = 0; i < intensity; i++) {
     const el = document.createElement("div");
     el.className = "heart-pop";
     el.textContent = hearts[Math.floor(Math.random() * hearts.length)];
 
-    // random spread
-    const dx = (Math.random() * 220 - 110).toFixed(1) + "px";
-    const dy = (Math.random() * 220 - 140).toFixed(1) + "px";
+    const dx = (Math.random() * 240 - 120).toFixed(1) + "px";
+    const dy = (Math.random() * 240 - 150).toFixed(1) + "px";
     el.style.setProperty("--dx", dx);
     el.style.setProperty("--dy", dy);
 
-    // random size
-    const size = 14 + Math.random() * 14;
+    const size = 14 + Math.random() * 18;
     el.style.fontSize = size.toFixed(0) + "px";
 
     el.style.left = x + "px";
@@ -81,20 +66,18 @@ function burstHearts(x, y, intensity = 14) {
 function burstFromElement(el, intensity = 14) {
   if (!el) return;
   const r = el.getBoundingClientRect();
-  const x = r.left + r.width / 2;
-  const y = r.top + r.height / 2;
-  burstHearts(x, y, intensity);
+  burstHearts(r.left + r.width / 2, r.top + r.height / 2, intensity);
 }
 
-// ===== Reveal content =====
-function revealContent() {
-  if (content) content.classList.remove("hidden");
-}
+// ===== Steps navigation =====
+let currentStep = 1;
+const totalSteps = stepPages.length || 4;
 
 function showStep(step) {
   if (!stepPages.length) return;
 
   currentStep = Math.min(Math.max(step, 1), totalSteps);
+
   stepPages.forEach((page, index) => {
     const isActive = index === currentStep - 1;
     page.classList.toggle("hidden", !isActive);
@@ -110,35 +93,60 @@ function showStep(step) {
   }
 }
 
+if (prevStepBtn) prevStepBtn.addEventListener("click", () => showStep(currentStep - 1));
+if (nextStepBtn) nextStepBtn.addEventListener("click", () => showStep(currentStep + 1));
+
+// ===== Reveal main content =====
+function revealContent() {
+  if (content) content.classList.remove("hidden");
+}
+
 if (startBtn) {
   startBtn.addEventListener("click", () => {
-    currentStep = 1;
     revealContent();
-    showStep(currentStep);
+    showStep(1);
     startBtn.disabled = true;
     startBtn.textContent = "Surprises unlocked ✅";
     burstFromElement(startBtn, 18);
+
+    // Optional: start music if user already turned it ON later.
   });
 }
 
 if (scrollPhotosBtn) {
   scrollPhotosBtn.addEventListener("click", () => {
-    currentStep = 2;
     revealContent();
-    showStep(currentStep);
+    showStep(2);
     burstFromElement(scrollPhotosBtn, 12);
   });
 }
 
-if (prevStepBtn) {
-  prevStepBtn.addEventListener("click", () => {
-    showStep(currentStep - 1);
-  });
+// ===== Music control =====
+async function setMusic(on) {
+  if (!bgMusic || !musicBtn) return;
+
+  if (on) {
+    try {
+      bgMusic.volume = 0.55;
+      await bgMusic.play(); // works after user gesture
+      musicBtn.textContent = "Music: ON 🎵";
+      musicBtn.classList.remove("off");
+    } catch (e) {
+      musicBtn.textContent = "Tap again for music 🎵";
+      musicBtn.classList.remove("off");
+    }
+  } else {
+    bgMusic.pause();
+    musicBtn.textContent = "Music: OFF";
+    musicBtn.classList.add("off");
+  }
 }
 
-if (nextStepBtn) {
-  nextStepBtn.addEventListener("click", () => {
-    showStep(currentStep + 1);
+if (musicBtn) {
+  musicBtn.addEventListener("click", () => {
+    const isOn = bgMusic && !bgMusic.paused;
+    burstFromElement(musicBtn, 12);
+    setMusic(!isOn);
   });
 }
 
@@ -276,7 +284,25 @@ function renderSlide(newIndex) {
 function next() { renderSlide(idx + 1); }
 function prev() { renderSlide(idx - 1); }
 
-// Pause auto briefly after interaction
+function stopAuto() {
+  if (autoTimer) window.clearInterval(autoTimer);
+  autoTimer = null;
+}
+
+function startAuto() {
+  stopAuto();
+  if (!autoOn) return;
+
+  autoTimer = window.setInterval(() => {
+    if (currentStep !== 2 || (content && content.classList.contains("hidden"))) return;
+    if (slider) {
+      const r = slider.getBoundingClientRect();
+      burstHearts(r.left + r.width * 0.72, r.top + r.height * 0.70, 6);
+    }
+    next();
+  }, 4200);
+}
+
 function stopAutoTemporarily() {
   stopAuto();
   if (autoOn) {
@@ -304,15 +330,6 @@ document.addEventListener("keydown", (e) => {
   if (e.key === "ArrowLeft") { stopAutoTemporarily(); prev(); }
 });
 
-// Tap anywhere on slider → tiny heart burst
-if (slider) {
-  slider.addEventListener("click", (e) => {
-    // avoid double burst when clicking buttons (they already burst)
-    if (e.target === prevPhoto || e.target === nextPhoto) return;
-    burstHearts(e.clientX, e.clientY, 8);
-  });
-}
-
 // Swipe support
 let touchStartX = 0;
 let touchStartY = 0;
@@ -336,26 +353,12 @@ if (slider) {
       else prev();
     }
   });
-}
 
-// Auto play
-function startAuto() {
-  stopAuto();
-  if (!autoOn) return;
-  autoTimer = window.setInterval(() => {
-    if (currentStep !== 2 || (content && content.classList.contains("hidden"))) return;
-    // burst near the bottom-right of the frame during auto
-    if (slider) {
-      const r = slider.getBoundingClientRect();
-      burstHearts(r.left + r.width * 0.72, r.top + r.height * 0.70, 6);
-    }
-    next();
-  }, 4200);
-}
-
-function stopAuto() {
-  if (autoTimer) window.clearInterval(autoTimer);
-  autoTimer = null;
+  // Tap anywhere on slider
+  slider.addEventListener("click", (e) => {
+    if (e.target === prevPhoto || e.target === nextPhoto) return;
+    burstHearts(e.clientX, e.clientY, 8);
+  });
 }
 
 if (toggleAuto) {
@@ -376,14 +379,13 @@ if (replayCaps) {
   });
 }
 
-// Init slider
+// Init
+showStep(1);
+
 if (slideImg && slideCap && slideCount) {
   slideImg.src = slides[0].src;
   slideCount.textContent = `1 / ${slides.length}`;
   showCaption(slides[0].cap);
-
   setAutoUi();
   startAuto();
 }
-
-showStep(1);
