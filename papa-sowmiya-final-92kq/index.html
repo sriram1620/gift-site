@@ -5,10 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Happy Birthday Sowmiya ❤️</title>
 
-  <!-- Favicon is at repo root: /gift-site/favicon.ico -->
   <link rel="icon" href="../favicon.ico" type="image/x-icon" />
-
-  <!-- Page styling (same folder) -->
   <link rel="stylesheet" href="styles.css" />
 </head>
 
@@ -20,17 +17,16 @@
     <p class="sub">A tiny surprise site made with love, just for you.</p>
 
     <div class="row">
-      <button class="btn" id="startBtn">Start the surprises ✨</button>
-      <button class="btn ghost" id="scrollPhotosBtn">Photos 📸</button>
+      <button class="btn" id="startBtn" type="button">Start the surprises ✨</button>
+      <button class="btn ghost" id="scrollPhotosBtn" type="button">Photos 📸</button>
     </div>
   </header>
 
-  <!-- Hidden until "Start the surprises" -->
   <main id="content" class="hidden">
     <section class="card">
       <h2>Love Quote Jar</h2>
       <p id="quote" class="quote">Click the button for a quote.</p>
-      <button class="btn" id="quoteBtn">Give me a quote</button>
+      <button class="btn" id="quoteBtn" type="button">Give me a quote</button>
     </section>
 
     <section class="card" id="photos">
@@ -73,7 +69,7 @@
 
       <div class="row">
         <input id="pw" type="password" placeholder="Password" />
-        <button class="btn" id="unlockBtn">Unlock</button>
+        <button class="btn" id="unlockBtn" type="button">Unlock</button>
       </div>
 
       <div id="secretContent" class="hidden">
@@ -88,8 +84,8 @@
     </section>
   </main>
 
-  <!-- Lightbox (MUST start hidden) -->
-  <div id="lightbox" class="lightbox hidden">
+  <!-- Lightbox: starts hidden -->
+  <div id="lightbox" class="lightbox hidden" aria-hidden="true">
     <div class="lightbox-inner">
       <button class="x" id="closeLb" type="button">×</button>
       <img id="lbImg" alt="" />
@@ -97,7 +93,6 @@
     </div>
   </div>
 
-  <!-- JS (same folder) -->
   <script src="script.js"></script>
 </body>
 </html>
