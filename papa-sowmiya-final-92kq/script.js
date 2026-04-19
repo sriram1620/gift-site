@@ -1,6 +1,6 @@
 const $ = (id) => document.getElementById(id);
 
-// ===== Page controls =====
+// ===== Elements =====
 const startBtn = $("startBtn");
 const content = $("content");
 const scrollPhotosBtn = $("scrollPhotosBtn");
@@ -14,6 +14,19 @@ const unlockBtn = $("unlockBtn");
 const pw = $("pw");
 const secretContent = $("secretContent");
 const pwMsg = $("pwMsg");
+
+// Heart burst layer
+const heartBurstLayer = $("heartBurstLayer");
+
+// Slider elements
+const slideImg = $("slideImg");
+const slideCap = $("slideCap");
+const slideCount = $("slideCount");
+const prevPhoto = $("prevPhoto");
+const nextPhoto = $("nextPhoto");
+const slider = $("slider");
+const toggleAuto = $("toggleAuto");
+const replayCaps = $("replayCaps");
 
 // Lightbox (kept hidden)
 const lightbox = $("lightbox");
@@ -30,6 +43,42 @@ function closeLightbox() {
 closeLightbox();
 if (closeLb) closeLb.addEventListener("click", closeLightbox);
 
+// ===== Heart burst (JS) =====
+function burstHearts(x, y, intensity = 14) {
+  if (!heartBurstLayer) return;
+
+  const hearts = ["❤", "💖", "💗", "💜"];
+  for (let i = 0; i < intensity; i++) {
+    const el = document.createElement("div");
+    el.className = "heart-pop";
+    el.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+
+    // random spread
+    const dx = (Math.random() * 220 - 110).toFixed(1) + "px";
+    const dy = (Math.random() * 220 - 140).toFixed(1) + "px";
+    el.style.setProperty("--dx", dx);
+    el.style.setProperty("--dy", dy);
+
+    // random size
+    const size = 14 + Math.random() * 14;
+    el.style.fontSize = size.toFixed(0) + "px";
+
+    el.style.left = x + "px";
+    el.style.top = y + "px";
+
+    heartBurstLayer.appendChild(el);
+    el.addEventListener("animationend", () => el.remove());
+  }
+}
+
+function burstFromElement(el, intensity = 14) {
+  if (!el) return;
+  const r = el.getBoundingClientRect();
+  const x = r.left + r.width / 2;
+  const y = r.top + r.height / 2;
+  burstHearts(x, y, intensity);
+}
+
 // ===== Reveal content =====
 function revealContent() {
   if (content) content.classList.remove("hidden");
@@ -40,6 +89,8 @@ if (startBtn) {
     revealContent();
     startBtn.disabled = true;
     startBtn.textContent = "Surprises unlocked ✅";
+    burstFromElement(startBtn, 18);
+
     if (content) window.scrollTo({ top: content.offsetTop - 10, behavior: "smooth" });
   });
 }
@@ -47,6 +98,7 @@ if (startBtn) {
 if (scrollPhotosBtn) {
   scrollPhotosBtn.addEventListener("click", () => {
     revealContent();
+    burstFromElement(scrollPhotosBtn, 12);
     const photos = $("photos");
     if (photos) photos.scrollIntoView({ behavior: "smooth", block: "start" });
   });
@@ -63,8 +115,9 @@ const quotes = [
 ];
 
 if (quoteBtn && quoteEl) {
-  quoteBtn.addEventListener("click", () => {
+  quoteBtn.addEventListener("click", (e) => {
     quoteEl.textContent = quotes[Math.floor(Math.random() * quotes.length)];
+    burstHearts(e.clientX, e.clientY, 10);
   });
 }
 
@@ -84,10 +137,13 @@ if (surprisesWrap) {
     const box = document.createElement("div");
     box.className = "surprise";
     box.innerHTML = `<div><div class="heart">❤️</div><div class="sub">Click to reveal</div></div>`;
-    box.addEventListener("click", () => {
+
+    box.addEventListener("click", (e) => {
       const revealed = box.classList.toggle("revealed");
       box.textContent = revealed ? msg : "❤️ Click to reveal";
+      burstHearts(e.clientX, e.clientY, 10);
     });
+
     surprisesWrap.appendChild(box);
   });
 }
@@ -95,34 +151,23 @@ if (surprisesWrap) {
 // ===== Password unlock =====
 const PASSWORD = "papa";
 if (unlockBtn && pw && secretContent && pwMsg) {
-  unlockBtn.addEventListener("click", () => {
+  unlockBtn.addEventListener("click", (e) => {
     const val = (pw.value || "").trim().toLowerCase();
     if (!val) return;
 
     if (val === PASSWORD) {
       secretContent.classList.remove("hidden");
       pwMsg.textContent = "Unlocked ❤️";
+      burstHearts(e.clientX, e.clientY, 20);
     } else {
       secretContent.classList.add("hidden");
       pwMsg.textContent = "Wrong password—hint: your nickname.";
+      burstHearts(e.clientX, e.clientY, 8);
     }
   });
 }
 
-// =====================================================
-// ===== Swipe/Click Photo Slider (one-by-one) =====
-// =====================================================
-const slideImg = $("slideImg");
-const slideCap = $("slideCap");
-const slideCount = $("slideCount");
-const prevPhoto = $("prevPhoto");
-const nextPhoto = $("nextPhoto");
-const slider = $("slider");
-
-const toggleAuto = $("toggleAuto");
-const replayCaps = $("replayCaps");
-
-// Ensure these match your images folder names exactly:
+// ===== Slider data =====
 const slides = [
   { src: "images/01.jpg", cap: "My favorite kind of day—because you were in it." },
   { src: "images/02.jpg", cap: "Your smile = my peace." },
@@ -147,7 +192,7 @@ const slides = [
 ];
 
 let idx = 0;
-let autoOn = true;     // default ON
+let autoOn = true;
 let autoTimer = null;
 
 function setAutoUi() {
@@ -160,11 +205,9 @@ function showCaption(text) {
   if (!slideCap) return;
   slideCap.textContent = text;
 
-  // Pop in
   slideCap.classList.add("show");
   slideCap.classList.remove("fade");
 
-  // Then fade away
   window.clearTimeout(showCaption._t1);
   showCaption._t1 = window.setTimeout(() => {
     slideCap.classList.add("fade");
@@ -175,11 +218,9 @@ function showCaption(text) {
 function renderSlide(newIndex) {
   if (!slideImg || !slideCap || !slideCount) return;
 
-  // Fade caption immediately when changing
   slideCap.classList.add("fade");
   slideCap.classList.remove("show");
 
-  // Swap animation
   slideImg.classList.add("swap");
 
   window.setTimeout(() => {
@@ -187,7 +228,6 @@ function renderSlide(newIndex) {
     slideImg.src = slides[idx].src;
     slideCount.textContent = `${idx + 1} / ${slides.length}`;
 
-    // Fade image back in and show caption
     window.setTimeout(() => {
       slideImg.classList.remove("swap");
       showCaption(slides[idx].cap);
@@ -198,7 +238,7 @@ function renderSlide(newIndex) {
 function next() { renderSlide(idx + 1); }
 function prev() { renderSlide(idx - 1); }
 
-// Pause auto for a bit whenever user interacts
+// Pause auto briefly after interaction
 function stopAutoTemporarily() {
   stopAuto();
   if (autoOn) {
@@ -207,8 +247,17 @@ function stopAutoTemporarily() {
   }
 }
 
-if (prevPhoto) prevPhoto.addEventListener("click", () => { stopAutoTemporarily(); prev(); });
-if (nextPhoto) nextPhoto.addEventListener("click", () => { stopAutoTemporarily(); next(); });
+if (prevPhoto) prevPhoto.addEventListener("click", () => {
+  stopAutoTemporarily();
+  burstFromElement(prevPhoto, 10);
+  prev();
+});
+
+if (nextPhoto) nextPhoto.addEventListener("click", () => {
+  stopAutoTemporarily();
+  burstFromElement(nextPhoto, 10);
+  next();
+});
 
 document.addEventListener("keydown", (e) => {
   if (!slider) return;
@@ -216,7 +265,16 @@ document.addEventListener("keydown", (e) => {
   if (e.key === "ArrowLeft") { stopAutoTemporarily(); prev(); }
 });
 
-// Swipe
+// Tap anywhere on slider → tiny heart burst
+if (slider) {
+  slider.addEventListener("click", (e) => {
+    // avoid double burst when clicking buttons (they already burst)
+    if (e.target === prevPhoto || e.target === nextPhoto) return;
+    burstHearts(e.clientX, e.clientY, 8);
+  });
+}
+
+// Swipe support
 let touchStartX = 0;
 let touchStartY = 0;
 
@@ -233,19 +291,26 @@ if (slider) {
     const dx = t.clientX - touchStartX;
     const dy = t.clientY - touchStartY;
 
-    // horizontal swipe threshold
     if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) {
+      burstHearts(t.clientX, t.clientY, 10);
       if (dx < 0) next();
       else prev();
     }
   });
 }
 
-// Auto-play
+// Auto play
 function startAuto() {
   stopAuto();
   if (!autoOn) return;
-  autoTimer = window.setInterval(() => next(), 4200);
+  autoTimer = window.setInterval(() => {
+    // burst near the bottom-right of the frame during auto
+    if (slider) {
+      const r = slider.getBoundingClientRect();
+      burstHearts(r.left + r.width * 0.72, r.top + r.height * 0.70, 6);
+    }
+    next();
+  }, 4200);
 }
 
 function stopAuto() {
@@ -257,19 +322,21 @@ if (toggleAuto) {
   toggleAuto.addEventListener("click", () => {
     autoOn = !autoOn;
     setAutoUi();
+    burstFromElement(toggleAuto, 14);
     if (autoOn) startAuto();
     else stopAuto();
   });
 }
 
 if (replayCaps) {
-  replayCaps.addEventListener("click", () => {
+  replayCaps.addEventListener("click", (e) => {
     stopAutoTemporarily();
+    burstHearts(e.clientX, e.clientY, 10);
     showCaption(slides[idx].cap);
   });
 }
 
-// Init
+// Init slider
 if (slideImg && slideCap && slideCount) {
   slideImg.src = slides[0].src;
   slideCount.textContent = `1 / ${slides.length}`;
