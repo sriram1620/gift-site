@@ -28,64 +28,80 @@
   </header>
 
   <main id="content" class="hidden">
-    <section class="card">
-      <h2>Love Quote Jar</h2>
-      <p id="quote" class="quote">Click the button for a quote.</p>
-      <button class="btn" id="quoteBtn" type="button">Give me a quote</button>
-    </section>
+    <div class="step-page" data-step="1">
+      <section class="card">
+        <h2>Love Quote Jar</h2>
+        <p id="quote" class="quote">Click the button for a quote.</p>
+        <button class="btn" id="quoteBtn" type="button">Give me a quote</button>
+      </section>
+    </div>
 
-    <!-- Slider -->
-    <section class="card" id="photos">
-      <h2>Photo Memories</h2>
-      <p class="sub">Swipe on mobile • Use buttons / arrow keys on laptop</p>
+    <div class="step-page hidden" data-step="2">
+      <!-- Slider -->
+      <section class="card" id="photos">
+        <h2>Photo Memories</h2>
+        <p class="sub">Swipe on mobile • Use buttons / arrow keys on laptop</p>
 
-      <div class="slider" id="slider" aria-label="Photo slider">
-        <button class="nav prev" id="prevPhoto" type="button" aria-label="Previous photo">‹</button>
+        <div class="slider" id="slider" aria-label="Photo slider">
+          <button class="nav prev" id="prevPhoto" type="button" aria-label="Previous photo">‹</button>
 
-        <div class="frame">
-          <img id="slideImg" alt="Memory photo" />
-          <div class="caption" id="slideCap"></div>
-          <div class="count" id="slideCount"></div>
+          <div class="frame">
+            <img id="slideImg" alt="Memory photo" />
+            <div class="caption" id="slideCap"></div>
+            <div class="count" id="slideCount"></div>
+          </div>
+
+          <button class="nav next" id="nextPhoto" type="button" aria-label="Next photo">›</button>
         </div>
 
-        <button class="nav next" id="nextPhoto" type="button" aria-label="Next photo">›</button>
-      </div>
+        <div class="row" style="margin-top:12px;">
+          <button class="btn glow" id="toggleAuto" type="button" aria-label="Toggle auto play">Auto: ON ✨</button>
+          <button class="btn ghost" id="replayCaps" type="button">Replay caption</button>
+        </div>
 
-      <div class="row" style="margin-top:12px;">
-        <button class="btn glow" id="toggleAuto" type="button" aria-label="Toggle auto play">Auto: ON ✨</button>
-        <button class="btn ghost" id="replayCaps" type="button">Replay caption</button>
-      </div>
-
-      <p class="sub" style="margin-top:10px;">
-        Tip: Auto-play pauses for 5 seconds whenever she swipes or taps Next/Prev.
-      </p>
-    </section>
-
-    <section class="card">
-      <h2>Click-to-Reveal Surprises</h2>
-      <p class="sub">Tap each heart to reveal something.</p>
-      <div class="surprises" id="surprises"></div>
-    </section>
-
-    <section class="card secret">
-      <h2>Final Surprise (Secret)</h2>
-      <p class="sub">Password hint: your nickname.</p>
-
-      <div class="row">
-        <input id="pw" type="password" placeholder="Password" />
-        <button class="btn" id="unlockBtn" type="button">Unlock</button>
-      </div>
-
-      <div id="secretContent" class="hidden">
-        <h3>To Sowmiya ❤️</h3>
-        <p>
-          Happy Birthday, my love. You’re my calm, my happiness, and my favorite person.
-          I’m grateful for you—today and always.
+        <p class="sub" style="margin-top:10px;">
+          Tip: Auto-play pauses for 5 seconds whenever she swipes or taps Next/Prev.
         </p>
-      </div>
+      </section>
+    </div>
 
-      <p id="pwMsg" class="msg"></p>
-    </section>
+    <div class="step-page hidden" data-step="3">
+      <section class="card">
+        <h2>Click-to-Reveal Surprises</h2>
+        <p class="sub">Tap each heart to reveal something.</p>
+        <div class="surprises" id="surprises"></div>
+      </section>
+    </div>
+
+    <div class="step-page hidden" data-step="4">
+      <section class="card secret">
+        <h2>Final Surprise (Secret)</h2>
+        <p class="sub">Password hint: your nickname.</p>
+
+        <div class="row">
+          <input id="pw" type="password" placeholder="Password" />
+          <button class="btn" id="unlockBtn" type="button">Unlock</button>
+        </div>
+
+        <div id="secretContent" class="hidden">
+          <h3>To Sowmiya ❤️</h3>
+          <p>
+            Happy Birthday, my love. You’re my calm, my happiness, and my favorite person.
+            I’m grateful for you—today and always.
+          </p>
+        </div>
+
+        <p id="pwMsg" class="msg"></p>
+      </section>
+    </div>
+
+    <nav class="card step-nav" aria-label="Page navigation">
+      <div class="row step-controls">
+        <button class="btn ghost" id="prevStepBtn" type="button" aria-label="Go to previous page">← Back</button>
+        <p class="sub step-indicator" id="stepIndicator" aria-live="polite">Page 1 of 4</p>
+        <button class="btn" id="nextStepBtn" type="button" aria-label="Go to next page">Next →</button>
+      </div>
+    </nav>
   </main>
 
   <!-- Lightbox (kept hidden / not used) -->
