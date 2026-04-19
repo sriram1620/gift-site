@@ -5,16 +5,14 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Happy Birthday Sowmiya ❤️</title>
 
-  <!-- Favicon is at repo root -->
   <link rel="icon" href="../favicon.ico" type="image/x-icon" />
-
   <link rel="stylesheet" href="styles.css" />
 </head>
 
 <body>
   <!-- Background effects -->
-  <div class="bg-hearts" aria-hidden="true"></div>
-  <div class="float-hearts" aria-hidden="true"></div>
+  <div class="bg-gradient" aria-hidden="true"></div>
+  <div class="big-hearts" aria-hidden="true"></div>
   <div class="heart-burst-layer" id="heartBurstLayer" aria-hidden="true"></div>
 
   <header class="card">
@@ -24,11 +22,13 @@
     <div class="row">
       <button class="btn" id="startBtn" type="button">Start the surprises ✨</button>
       <button class="btn ghost" id="scrollPhotosBtn" type="button">Photos 📸</button>
+      <button class="btn glow off" id="musicBtn" type="button" aria-label="Toggle music">Music: OFF</button>
     </div>
   </header>
 
   <main id="content" class="hidden">
-    <div class="step-page" data-step="1">
+    <!-- STEP 1 -->
+    <div class="step-page" data-step="1" aria-hidden="false">
       <section class="card">
         <h2>Love Quote Jar</h2>
         <p id="quote" class="quote">Click the button for a quote.</p>
@@ -36,8 +36,8 @@
       </section>
     </div>
 
-    <div class="step-page hidden" data-step="2">
-      <!-- Slider -->
+    <!-- STEP 2 -->
+    <div class="step-page hidden" data-step="2" aria-hidden="true">
       <section class="card" id="photos">
         <h2>Photo Memories</h2>
         <p class="sub">Swipe on mobile • Use buttons / arrow keys on laptop</p>
@@ -65,7 +65,8 @@
       </section>
     </div>
 
-    <div class="step-page hidden" data-step="3">
+    <!-- STEP 3 -->
+    <div class="step-page hidden" data-step="3" aria-hidden="true">
       <section class="card">
         <h2>Click-to-Reveal Surprises</h2>
         <p class="sub">Tap each heart to reveal something.</p>
@@ -73,7 +74,8 @@
       </section>
     </div>
 
-    <div class="step-page hidden" data-step="4">
+    <!-- STEP 4 -->
+    <div class="step-page hidden" data-step="4" aria-hidden="true">
       <section class="card secret">
         <h2>Final Surprise (Secret)</h2>
         <p class="sub">Password hint: your nickname.</p>
@@ -95,6 +97,7 @@
       </section>
     </div>
 
+    <!-- Navigation -->
     <nav class="card step-nav" aria-label="Page navigation">
       <div class="row step-controls">
         <button class="btn ghost" id="prevStepBtn" type="button" aria-label="Go to previous page">← Back</button>
@@ -104,14 +107,10 @@
     </nav>
   </main>
 
-  <!-- Lightbox (kept hidden / not used) -->
-  <div id="lightbox" class="lightbox hidden" aria-hidden="true">
-    <div class="lightbox-inner">
-      <button class="x" id="closeLb" type="button">×</button>
-      <img id="lbImg" alt="" />
-      <p id="lbCap" class="sub"></p>
-    </div>
-  </div>
+  <!-- Background music (upload music.mp3 in this folder) -->
+  <audio id="bgMusic" preload="auto" loop>
+    <source src="music.mp3" type="audio/mpeg" />
+  </audio>
 
   <script src="script.js"></script>
 </body>
