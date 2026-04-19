@@ -59,6 +59,29 @@ h1,h2,h3{ margin:0 0 10px; }
 
 .hidden{ display:none !important; }
 
+.step-page{
+  animation: stepFade .28s ease;
+}
+
+.step-nav{
+  margin-top: 10px;
+}
+
+.step-controls{
+  justify-content: space-between;
+}
+
+.step-indicator{
+  margin:0;
+  font-weight:600;
+  text-align:center;
+}
+
+@keyframes stepFade{
+  from{ opacity:0; transform: translateY(6px); }
+  to{ opacity:1; transform: translateY(0); }
+}
+
 .quote{
   font-size:1.1rem;
   line-height:1.5;
@@ -266,6 +289,18 @@ input{
   .slider{ grid-template-columns: 44px 1fr 44px; }
   .nav{ width:44px; height:44px; font-size:28px; }
   .frame img{ height: 56vh; }
+}
+
+@media (min-width: 768px){
+  .frame{
+    min-height: 360px;
+  }
+
+  .frame img{
+    height: min(66vh, 560px);
+    object-fit: contain;
+    background: rgba(255,255,255,.03);
+  }
 }
 
 /* ===== Heart burst layer (JS creates hearts here) ===== */

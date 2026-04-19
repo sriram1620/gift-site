@@ -4,6 +4,10 @@ const $ = (id) => document.getElementById(id);
 const startBtn = $("startBtn");
 const content = $("content");
 const scrollPhotosBtn = $("scrollPhotosBtn");
+const stepPages = Array.from(document.querySelectorAll(".step-page"));
+const prevStepBtn = $("prevStepBtn");
+const nextStepBtn = $("nextStepBtn");
+const stepIndicator = $("stepIndicator");
 
 const quoteEl = $("quote");
 const quoteBtn = $("quoteBtn");
@@ -27,6 +31,9 @@ const nextPhoto = $("nextPhoto");
 const slider = $("slider");
 const toggleAuto = $("toggleAuto");
 const replayCaps = $("replayCaps");
+
+let currentStep = 1;
+const totalSteps = stepPages.length || 4;
 
 // Lightbox (kept hidden)
 const lightbox = $("lightbox");
@@ -84,23 +91,54 @@ function revealContent() {
   if (content) content.classList.remove("hidden");
 }
 
+function showStep(step) {
+  if (!stepPages.length) return;
+
+  currentStep = Math.min(Math.max(step, 1), totalSteps);
+  stepPages.forEach((page, index) => {
+    const isActive = index === currentStep - 1;
+    page.classList.toggle("hidden", !isActive);
+    page.setAttribute("aria-hidden", String(!isActive));
+  });
+
+  if (stepIndicator) stepIndicator.textContent = `Page ${currentStep} of ${totalSteps}`;
+  if (prevStepBtn) prevStepBtn.disabled = currentStep === 1;
+  if (nextStepBtn) nextStepBtn.disabled = currentStep === totalSteps;
+
+  if (content && !content.classList.contains("hidden")) {
+    window.scrollTo({ top: content.offsetTop - 10, behavior: "smooth" });
+  }
+}
+
 if (startBtn) {
   startBtn.addEventListener("click", () => {
+    currentStep = 1;
     revealContent();
+    showStep(currentStep);
     startBtn.disabled = true;
     startBtn.textContent = "Surprises unlocked ✅";
     burstFromElement(startBtn, 18);
-
-    if (content) window.scrollTo({ top: content.offsetTop - 10, behavior: "smooth" });
   });
 }
 
 if (scrollPhotosBtn) {
   scrollPhotosBtn.addEventListener("click", () => {
+    currentStep = 2;
     revealContent();
+    showStep(currentStep);
     burstFromElement(scrollPhotosBtn, 12);
-    const photos = $("photos");
-    if (photos) photos.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+}
+
+if (prevStepBtn) {
+  prevStepBtn.addEventListener("click", () => {
+    showStep(currentStep - 1);
+  });
+}
+
+if (nextStepBtn) {
+  nextStepBtn.addEventListener("click", () => {
+    showStep(currentStep + 1);
   });
 }
 
@@ -261,6 +299,7 @@ if (nextPhoto) nextPhoto.addEventListener("click", () => {
 
 document.addEventListener("keydown", (e) => {
   if (!slider) return;
+  if (currentStep !== 2 || (content && content.classList.contains("hidden"))) return;
   if (e.key === "ArrowRight") { stopAutoTemporarily(); next(); }
   if (e.key === "ArrowLeft") { stopAutoTemporarily(); prev(); }
 });
@@ -304,6 +343,7 @@ function startAuto() {
   stopAuto();
   if (!autoOn) return;
   autoTimer = window.setInterval(() => {
+    if (currentStep !== 2 || (content && content.classList.contains("hidden"))) return;
     // burst near the bottom-right of the frame during auto
     if (slider) {
       const r = slider.getBoundingClientRect();
@@ -345,3 +385,5 @@ if (slideImg && slideCap && slideCount) {
   setAutoUi();
   startAuto();
 }
+
+showStep(1);
