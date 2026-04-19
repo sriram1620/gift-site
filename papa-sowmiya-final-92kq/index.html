@@ -5,7 +5,9 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Happy Birthday Sowmiya ❤️</title>
 
+  <!-- Favicon is at repo root -->
   <link rel="icon" href="../favicon.ico" type="image/x-icon" />
+
   <link rel="stylesheet" href="styles.css" />
 </head>
 
@@ -29,32 +31,31 @@
       <button class="btn" id="quoteBtn" type="button">Give me a quote</button>
     </section>
 
+    <!-- NEW: one-by-one slider -->
     <section class="card" id="photos">
-      <h2>Photo Memories (20)</h2>
-      <p class="sub">Click a photo to open it full screen.</p>
+      <h2>Photo Memories</h2>
+      <p class="sub">Swipe on mobile • Use buttons / arrow keys on laptop</p>
 
-      <div class="grid" id="gallery">
-        <img src="images/01.jpg" alt="Memory 1" data-caption="My favorite kind of day—because you were in it." />
-        <img src="images/02.jpg" alt="Memory 2" data-caption="Your smile = my peace." />
-        <img src="images/03.jpg" alt="Memory 3" data-caption="I love you more every day." />
-        <img src="images/04.jpg" alt="Memory 4" data-caption="Always you." />
-        <img src="images/05.jpg" alt="Memory 5" data-caption="Thank you for being you." />
-        <img src="images/06.jpg" alt="Memory 6" data-caption="You make life feel lighter." />
-        <img src="images/07.jpg" alt="Memory 7" data-caption="This moment is still living in my head rent-free." />
-        <img src="images/08.jpg" alt="Memory 8" data-caption="More memories with you, please." />
-        <img src="images/09.jpg" alt="Memory 9" data-caption="My safe place is next to you." />
-        <img src="images/10.jpg" alt="Memory 10" data-caption="You’re my favorite person." />
-        <img src="images/11.jpg" alt="Memory 11" data-caption="If love had a face, it would look like you." />
-        <img src="images/12.jpg" alt="Memory 12" data-caption="I’d choose you again and again." />
-        <img src="images/13.jpg" alt="Memory 13" data-caption="You’re my best decision." />
-        <img src="images/14.jpg" alt="Memory 14" data-caption="I love doing life with you." />
-        <img src="images/15.jpg" alt="Memory 15" data-caption="Your happiness is my favorite thing." />
-        <img src="images/16.jpg" alt="Memory 16" data-caption="My heart feels full with you." />
-        <img src="images/17.jpg" alt="Memory 17" data-caption="Cutest chapter of my life." />
-        <img src="images/18.jpg" alt="Memory 18" data-caption="Forever looks good with you." />
-        <img src="images/19.jpg" alt="Memory 19" data-caption="Even boring days become special with you." />
-        <img src="images/20.jpg" alt="Memory 20" data-caption="Happy Birthday, my Papa ❤️" />
+      <div class="slider" id="slider" aria-label="Photo slider">
+        <button class="nav prev" id="prevPhoto" type="button" aria-label="Previous photo">‹</button>
+
+        <div class="frame">
+          <img id="slideImg" alt="Memory photo" />
+          <div class="caption" id="slideCap"></div>
+          <div class="count" id="slideCount"></div>
+        </div>
+
+        <button class="nav next" id="nextPhoto" type="button" aria-label="Next photo">›</button>
       </div>
+
+      <div class="row" style="margin-top:12px;">
+        <button class="btn glow" id="toggleAuto" type="button" aria-label="Toggle auto play">Auto: ON ✨</button>
+        <button class="btn ghost" id="replayCaps" type="button">Replay caption</button>
+      </div>
+
+      <p class="sub" style="margin-top:10px;">
+        Tip: Auto-play pauses for 5 seconds whenever she swipes or taps Next/Prev.
+      </p>
     </section>
 
     <section class="card">
@@ -84,7 +85,7 @@
     </section>
   </main>
 
-  <!-- Lightbox: starts hidden -->
+  <!-- Lightbox: keep hidden (won't show on load) -->
   <div id="lightbox" class="lightbox hidden" aria-hidden="true">
     <div class="lightbox-inner">
       <button class="x" id="closeLb" type="button">×</button>
